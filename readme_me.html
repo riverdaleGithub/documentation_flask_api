@@ -1,111 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Professional API Documentation</title>
+<style>
+  body {
+    background-color: black;
+    color: white;
+    font-family: Arial, sans-serif;
+    padding: 20px;
+  }
+  h2, h3, h4, h5 {
+    color: #ffcc00; /* golden yellow */
+  }
+  code {
+    background-color: #333; /* dark gray */
+    color: white;
+    padding: 2px 5px;
+    border-radius: 3px;
+  }
+  pre {
+    background-color: #222; /* slightly darker gray */
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    overflow-x: auto; /* enable horizontal scrolling */
+  }
+  ol, ul {
+    padding-left: 20px;
+  }
+  li {
+    margin-bottom: 10px;
+  }
+</style>
+</head>
+<body>
 
-## API
+<h2 id="api">API</h2>
+<h3 id="-create-graphs-endpoint">🌟 Create Graphs Endpoint</h3>
+<ul>
+<li><strong>Endpoint:</strong> <code>/graphs/create</code></li>
+<li><strong>Methods:</strong> <code>GET</code>, <code>POST</code></li>
+</ul>
+<h4 id="parameters-">Parameters:</h4>
+<ul>
+<li><code>file_path</code> (string): Path to the file.</li>
+<li><code>subject</code> (string): Subject of the graph.</li>
+<li><code>graph_name</code> (string): Name of the graph.</li>
+<li><code>load_bool</code> (boolean): Boolean value indicating whether to load from MongoDB.</li>
+<li><code>subgraph_id</code> (string): ID of the subgraph.</li>
+</ul>
+<h4 id="example-calls-">Example Calls:</h4>
+<ol>
+<li><strong>Request:</strong><ul>
+<li><strong>Method:</strong> <code>POST</code></li>
+<li><strong>URL:</strong> <code>http://yourdomain.com/graphs/create?file_path=path/to/file&amp;subject=your_subject&amp;graph_name=your_graph&amp;load_bool=true&amp;subgraph_id=your_id</code></li>
+<li><strong>Headers:</strong> <ul>
+<li><code>Content-Type: application/json</code></li>
+</ul>
+</li>
+<li><strong>Body:</strong><pre><code class="lang-json">{
+    <span class="hljs-attr">"your"</span>: <span class="hljs-string">"json"</span>,
+    <span class="hljs-attr">"data"</span>: <span class="hljs-string">"here"</span>
+}
+</code></pre>
+</li>
+</ul>
+</li>
+<li><strong>Request:</strong><ul>
+<li><strong>Method:</strong> <code>GET</code></li>
+<li><strong>URL:</strong> <code>http://yourdomain.com/graphs/create?file_path=path/to/file&amp;subject=your_subject&amp;graph_name=your_graph&amp;load_bool=false&amp;subgraph_id=your_id</code></li>
+</ul>
+</li>
+</ol>
+<h3 id="-retrieve-graphs-endpoint">🌟 Retrieve Graphs Endpoint</h3>
+<ul>
+<li><strong>Endpoint:</strong> <code>/graphs/get_graph</code></li>
+<li><strong>Method:</strong> <code>GET</code></li>
+</ul>
+<h4 id="parameters-">Parameters:</h4>
+<ul>
+<li><code>graph_id</code> (string): ID of the graph.</li>
+</ul>
+<h4 id="example-call-">Example Call:</h4>
+<ol>
+<li><strong>Request:</strong><ul>
+<li><strong>Method:</strong> <code>GET</code></li>
+<li><strong>URL:</strong> <code>http://yourdomain.com/graphs/get_graph?graph_id=your_graph_id</code></li>
+</ul>
+</li>
+</ol>
+<h2 id="-node-and-graph-operations">📊 Node and Graph Operations</h2>
+<p>This module provides functionalities to work with nodes and graphs.</p>
+<h4 id="node-class">Node Class</h4>
+<p>Represents a node with attributes derived from a DataFrame row.</p>
+<h5 id="methods-">Methods:</h5>
+<ul>
+<li><strong>`<strong>init</strong>(</strong>kwargs)`**: Initializes a Node instance with attributes set according to kwargs.</li>
+<li><strong><code>print_attributes()</code></strong>: Prints the attributes of the Node instance and their values.</li>
+<li><strong><code>clean_column_names(df)</code></strong>: Cleans DataFrame column names by removing spaces and special characters.</li>
+<li><strong><code>df_row_to_instances(file_path: str = None) -&gt; List[Node]</code></strong>: Creates a list of Node instances from a CSV file.</li>
+<li><strong><code>create_graph(nodes: list, sub_bool: bool = False) -&gt; nx.DiGraph</code></strong>: Creates a directed graph from a list of Node objects.</li>
+<li><strong><code>visualize_subgraph(graph: nx.Graph, labels: dict, subject_of_interest: str = None)</code></strong>: Visualizes the given graph, optionally filtering by subject.</li>
+<li><strong><code>recreate_graph(adj_list, sub_labels)</code></strong>: Visualizes the given graph, by subgraph adj_list.</li>
+</ul>
+<h4 id="example-usage-">Example Usage:</h4>
+<pre><code class="lang-python"><span class="hljs-comment"># Creating Node instances from CSV file</span>
+nodes = <span class="hljs-keyword">Node</span>.<span class="hljs-title">df_row_to_instances</span>(<span class="hljs-string">"data/course_codes.csv"</span>)
 
-### 🌟 Create Graphs Endpoint
+<span class="hljs-comment"># Creating graph from Node instances</span>
+course_graph, labels = <span class="hljs-keyword">Node</span>.<span class="hljs-title">create_graph</span>(nodes)
 
-- **Endpoint:** `/graphs/create`
-- **Methods:** `GET`, `POST`
+<span class="hljs-comment"># Visualizing subgraph</span>
+<span class="hljs-keyword">Node</span>.<span class="hljs-title">visualize_subgraph</span>(course_graph, labels, <span class="hljs-attr">subject_of_interest=</span><span class="hljs-string">"Mathematics"</span>)
+</code></pre>
+<h2 id="-database-wrapper-class">📦 Database Wrapper Class</h2>
+<p>This module provides a wrapper class to interact with MongoDB for handling graphs.</p>
+<h4 id="dameon_db-class">Dameon_db Class</h4>
+<p>Wrapper class to help with graphs, database operations, and routes.</p>
+<h5 id="methods-">Methods:</h5>
+<ul>
+<li><strong><code>__init__(subgraph_id: str, subject: str)</code></strong>: Initializes the Dameon_db instance.</li>
+<li><strong><code>create_graph(file_path: str, subject: str)</code></strong>: Creates a graph from a CSV file and stores it in MongoDB.</li>
+<li><strong><code>get_graphs(object_id: str = &quot;65ccb1b234e2bbc17abe530e&quot;)</code></strong>: Retrieves graphs based on the given Object ID from MongoDB.</li>
+<li><strong><code>convert_objectid(obj)</code></strong>: Helper method to convert ObjectId to string in JSON.</li>
+</ul>
+<h4 id="example-usage-">Example Usage:</h4>
+<pre><code class="lang-python"><span class="hljs-comment"># Creating an instance of Dameon_db</span>
+db_instance = <span class="hljs-type">Dameon_db</span>(subgraph_id=<span class="hljs-string">"your_subgraph_id"</span>, subject=<span class="hljs-string">"your_subject"</span>)
 
-#### Parameters:
-- `file_path` (string): Path to the file.
-- `subject` (string): Subject of the graph.
-- `graph_name` (string): Name of the graph.
-- `load_bool` (boolean): Boolean value indicating whether to load from MongoDB.
-- `subgraph_id` (string): ID of the subgraph.
+<span class="hljs-comment"># Creating a graph and storing it in MongoDB</span>
+graph_data, graph_id = db_instance.create_graph(file_path=<span class="hljs-string">"data/file.csv"</span>, subject=<span class="hljs-string">"Mathematics"</span>)
 
-#### Example Calls:
+<span class="hljs-comment"># Retrieving graph from MongoDB</span>
+retrieved_graph = db_instance.get_graphs(object_id=<span class="hljs-string">"your_object_id"</span>)
 
-1. **Request:**
-   - **Method:** `POST`
-   - **URL:** `http://yourdomain.com/graphs/create?file_path=path/to/file&subject=your_subject&graph_name=your_graph&load_bool=true&subgraph_id=your_id`
-   - **Headers:** 
-     - `Content-Type: application/json`
-   - **Body:**
-     ```json
-     {
-         "your": "json",
-         "data": "here"
-     }
-     ```
-2. **Request:**
-   - **Method:** `GET`
-   - **URL:** `http://yourdomain.com/graphs/create?file_path=path/to/file&subject=your_subject&graph_name=your_graph&load_bool=false&subgraph_id=your_id`
+<span class="hljs-comment"># Retrieved graph: </span>
+ [{'_id': <span class="hljs-type">ObjectId</span>('<span class="hljs-number">65</span>ccb1b234e2bbc17abe530e'), 'graph_data': <span class="hljs-meta">{...}</span>, 'labels': <span class="hljs-meta">{...}</span>}]
+</code></pre>
 
-### 🌟 Retrieve Graphs Endpoint
-
-- **Endpoint:** `/graphs/get_graph`
-- **Method:** `GET`
-
-#### Parameters:
-- `graph_id` (string): ID of the graph.
-
-#### Example Call:
-
-1. **Request:**
-   - **Method:** `GET`
-   - **URL:** `http://yourdomain.com/graphs/get_graph?graph_id=your_graph_id`
-
-
-## 📊 Node and Graph Operations
-
-This module provides functionalities to work with nodes and graphs.
-
-#### Node Class
-
-Represents a node with attributes derived from a DataFrame row.
-
-##### Methods:
-
-- **`__init__(**kwargs)`**: Initializes a Node instance with attributes set according to kwargs.
-- **`print_attributes()`**: Prints the attributes of the Node instance and their values.
-- **`clean_column_names(df)`**: Cleans DataFrame column names by removing spaces and special characters.
-- **`df_row_to_instances(file_path: str = None) -> List[Node]`**: Creates a list of Node instances from a CSV file.
-- **`create_graph(nodes: list, sub_bool: bool = False) -> nx.DiGraph`**: Creates a directed graph from a list of Node objects.
-- **`visualize_subgraph(graph: nx.Graph, labels: dict, subject_of_interest: str = None)`**: Visualizes the given graph, optionally filtering by subject.
-- **`recreate_graph(adj_list, sub_labels)`**: Visualizes the given graph, by subgraph adj_list.
-
-#### Example Usage:
-
-```python
-# Creating Node instances from CSV file
-nodes = Node.df_row_to_instances("data/course_codes.csv")
-
-# Creating graph from Node instances
-course_graph, labels = Node.create_graph(nodes)
-
-# Visualizing subgraph
-Node.visualize_subgraph(course_graph, labels, subject_of_interest="Mathematics")
-
-```
-
-## 📦 Database Wrapper Class
-
-This module provides a wrapper class to interact with MongoDB for handling graphs.
-
-#### Dameon_db Class
-
-Wrapper class to help with graphs, database operations, and routes.
-
-##### Methods:
-
-- **`__init__(subgraph_id: str, subject: str)`**: Initializes the Dameon_db instance.
-- **`create_graph(file_path: str, subject: str)`**: Creates a graph from a CSV file and stores it in MongoDB.
-- **`get_graphs(object_id: str = "65ccb1b234e2bbc17abe530e")`**: Retrieves graphs based on the given Object ID from MongoDB.
-- **`convert_objectid(obj)`**: Helper method to convert ObjectId to string in JSON.
-
-#### Example Usage:
-
-```python
-# Creating an instance of Dameon_db
-db_instance = Dameon_db(subgraph_id="your_subgraph_id", subject="your_subject")
-
-# Creating a graph and storing it in MongoDB
-graph_data, graph_id = db_instance.create_graph(file_path="data/file.csv", subject="Mathematics")
-
-# Retrieving graph from MongoDB
-retrieved_graph = db_instance.get_graphs(object_id="your_object_id")
-
-# Retrieved graph: 
- [{'_id': ObjectId('65ccb1b234e2bbc17abe530e'), 'graph_data': {...}, 'labels': {...}}]
-
-```
+</body>
+</html>
