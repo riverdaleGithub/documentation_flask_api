@@ -1,0 +1,111 @@
+
+## API
+
+### 🌟 Create Graphs Endpoint
+
+- **Endpoint:** `/graphs/create`
+- **Methods:** `GET`, `POST`
+
+#### Parameters:
+- `file_path` (string): Path to the file.
+- `subject` (string): Subject of the graph.
+- `graph_name` (string): Name of the graph.
+- `load_bool` (boolean): Boolean value indicating whether to load from MongoDB.
+- `subgraph_id` (string): ID of the subgraph.
+
+#### Example Calls:
+
+1. **Request:**
+   - **Method:** `POST`
+   - **URL:** `http://yourdomain.com/graphs/create?file_path=path/to/file&subject=your_subject&graph_name=your_graph&load_bool=true&subgraph_id=your_id`
+   - **Headers:** 
+     - `Content-Type: application/json`
+   - **Body:**
+     ```json
+     {
+         "your": "json",
+         "data": "here"
+     }
+     ```
+2. **Request:**
+   - **Method:** `GET`
+   - **URL:** `http://yourdomain.com/graphs/create?file_path=path/to/file&subject=your_subject&graph_name=your_graph&load_bool=false&subgraph_id=your_id`
+
+### 🌟 Retrieve Graphs Endpoint
+
+- **Endpoint:** `/graphs/get_graph`
+- **Method:** `GET`
+
+#### Parameters:
+- `graph_id` (string): ID of the graph.
+
+#### Example Call:
+
+1. **Request:**
+   - **Method:** `GET`
+   - **URL:** `http://yourdomain.com/graphs/get_graph?graph_id=your_graph_id`
+
+
+## 📊 Node and Graph Operations
+
+This module provides functionalities to work with nodes and graphs.
+
+#### Node Class
+
+Represents a node with attributes derived from a DataFrame row.
+
+##### Methods:
+
+- **`__init__(**kwargs)`**: Initializes a Node instance with attributes set according to kwargs.
+- **`print_attributes()`**: Prints the attributes of the Node instance and their values.
+- **`clean_column_names(df)`**: Cleans DataFrame column names by removing spaces and special characters.
+- **`df_row_to_instances(file_path: str = None) -> List[Node]`**: Creates a list of Node instances from a CSV file.
+- **`create_graph(nodes: list, sub_bool: bool = False) -> nx.DiGraph`**: Creates a directed graph from a list of Node objects.
+- **`visualize_subgraph(graph: nx.Graph, labels: dict, subject_of_interest: str = None)`**: Visualizes the given graph, optionally filtering by subject.
+- **`recreate_graph(adj_list, sub_labels)`**: Visualizes the given graph, by subgraph adj_list.
+
+#### Example Usage:
+
+```python
+# Creating Node instances from CSV file
+nodes = Node.df_row_to_instances("data/course_codes.csv")
+
+# Creating graph from Node instances
+course_graph, labels = Node.create_graph(nodes)
+
+# Visualizing subgraph
+Node.visualize_subgraph(course_graph, labels, subject_of_interest="Mathematics")
+
+```
+
+## 📦 Database Wrapper Class
+
+This module provides a wrapper class to interact with MongoDB for handling graphs.
+
+#### Dameon_db Class
+
+Wrapper class to help with graphs, database operations, and routes.
+
+##### Methods:
+
+- **`__init__(subgraph_id: str, subject: str)`**: Initializes the Dameon_db instance.
+- **`create_graph(file_path: str, subject: str)`**: Creates a graph from a CSV file and stores it in MongoDB.
+- **`get_graphs(object_id: str = "65ccb1b234e2bbc17abe530e")`**: Retrieves graphs based on the given Object ID from MongoDB.
+- **`convert_objectid(obj)`**: Helper method to convert ObjectId to string in JSON.
+
+#### Example Usage:
+
+```python
+# Creating an instance of Dameon_db
+db_instance = Dameon_db(subgraph_id="your_subgraph_id", subject="your_subject")
+
+# Creating a graph and storing it in MongoDB
+graph_data, graph_id = db_instance.create_graph(file_path="data/file.csv", subject="Mathematics")
+
+# Retrieving graph from MongoDB
+retrieved_graph = db_instance.get_graphs(object_id="your_object_id")
+
+# Retrieved graph: 
+ [{'_id': ObjectId('65ccb1b234e2bbc17abe530e'), 'graph_data': {...}, 'labels': {...}}]
+
+```
